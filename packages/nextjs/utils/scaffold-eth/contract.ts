@@ -19,7 +19,6 @@ import {
   Log,
   TransactionReceipt,
 } from "viem";
-import { UseContractEventConfig, UseContractReadConfig, UseContractWriteConfig } from "wagmi";
 import deployedContractsData from "~~/contracts/deployedContracts";
 import externalContractsData from "~~/contracts/externalContracts";
 import scaffoldConfig from "~~/scaffold.config";
@@ -163,66 +162,34 @@ export type UseScaffoldReadConfig<
   TFunctionName extends ExtractAbiFunctionNames<ContractAbi<TContractName>, ReadAbiStateMutability>,
 > = {
   contractName: TContractName;
-} & IsContractDeclarationMissing<
-  Partial<UseContractReadConfig>,
-  {
-    functionName: TFunctionName;
-  } & UseScaffoldArgsParam<TContractName, TFunctionName> &
-    Omit<UseContractReadConfig, "chainId" | "abi" | "address" | "functionName" | "args">
->;
+  functionName: TFunctionName;
+} & UseScaffoldArgsParam<TContractName, TFunctionName>;
 
 export type UseScaffoldWriteConfig<
   TContractName extends ContractName,
   TFunctionName extends ExtractAbiFunctionNames<ContractAbi<TContractName>, WriteAbiStateMutability>,
 > = {
   contractName: TContractName;
+  functionName: TFunctionName;
   onBlockConfirmation?: (txnReceipt: TransactionReceipt) => void;
   blockConfirmations?: number;
-} & IsContractDeclarationMissing<
-  Partial<UseContractWriteConfig>,
-  {
-    functionName: TFunctionName;
-  } & UseScaffoldArgsParam<TContractName, TFunctionName> &
-    Omit<UseContractWriteConfig, "chainId" | "abi" | "address" | "functionName" | "args" | "mode">
->;
+} & UseScaffoldArgsParam<TContractName, TFunctionName>;
 
 export type UseScaffoldEventConfig<
   TContractName extends ContractName,
   TEventName extends ExtractAbiEventNames<ContractAbi<TContractName>>,
-  TEvent extends ExtractAbiEvent<ContractAbi<TContractName>, TEventName> = ExtractAbiEvent<
-    ContractAbi<TContractName>,
-    TEventName
-  >,
 > = {
   contractName: TContractName;
-} & IsContractDeclarationMissing<
-  Omit<UseContractEventConfig, "listener"> & {
-    listener: (
-      logs: Simplify<
-        Omit<Log<bigint, number, any>, "args" | "eventName"> & {
-          args: Record<string, unknown>;
-          eventName: string;
-        }
-      >[],
-    ) => void;
-  },
-  Omit<UseContractEventConfig<ContractAbi<TContractName>, TEventName>, "listener"> & {
-    listener: (
-      logs: Simplify<
-        Omit<Log<bigint, number, false, TEvent, false, [TEvent], TEventName>, "args"> & {
-          args: AbiParametersToPrimitiveTypes<TEvent["inputs"]> &
-            GetEventArgs<
-              ContractAbi<TContractName>,
-              TEventName,
-              {
-                IndexedOnly: false;
-              }
-            >;
-        }
-      >[],
-    ) => void;
-  }
->;
+  eventName: TEventName;
+  listener: (
+    logs: Simplify<
+      Omit<Log<bigint, number, any>, "args" | "eventName"> & {
+        args: Record<string, unknown>;
+        eventName: string;
+      }
+    >[],
+  ) => void;
+};
 
 type IndexedEventInputs<
   TContractName extends ContractName,

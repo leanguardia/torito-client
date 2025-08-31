@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { InheritanceTooltip } from "./InheritanceTooltip";
 import { Abi, AbiFunction } from "abitype";
 import { Address, TransactionReceipt } from "viem";
-import { useContractWrite, useNetwork, useWaitForTransaction } from "wagmi";
+import { useChainId, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import {
   ContractInput,
   TxReceipt,
@@ -14,7 +14,6 @@ import {
   transformAbiFunction,
 } from "~~/app/debug/_components/contract";
 import { IntegerInput } from "~~/components/scaffold-eth";
-import { useTransactor } from "~~/hooks/scaffold-eth";
 import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
 
 type WriteOnlyFunctionFormProps = {
@@ -34,27 +33,22 @@ export const WriteOnlyFunctionForm = ({
 }: WriteOnlyFunctionFormProps) => {
   const [form, setForm] = useState<Record<string, any>>(() => getInitialFormState(abiFunction));
   const [txValue, setTxValue] = useState<string | bigint>("");
-  const { chain } = useNetwork();
-  const writeTxn = useTransactor();
+  const chainId = useChainId();
   const { targetNetwork } = useTargetNetwork();
-  const writeDisabled = !chain || chain?.id !== targetNetwork.id;
+  const writeDisabled = !chainId || chainId !== targetNetwork.id;
 
-  const {
-    data: result,
-    isLoading,
-    writeAsync,
-  } = useContractWrite({
-    address: contractAddress,
-    functionName: abiFunction.name,
-    abi: abi,
-    args: getParsedContractFunctionArgs(form),
-  });
+  const { writeContract, data: result, isPending: isLoading } = useWriteContract();
 
   const handleWrite = async () => {
-    if (writeAsync) {
+    if (writeContract) {
       try {
-        const makeWriteWithParams = () => writeAsync({ value: BigInt(txValue) });
-        await writeTxn(makeWriteWithParams);
+        await writeContract({
+          address: contractAddress,
+          abi: abi,
+          functionName: abiFunction.name,
+          args: getParsedContractFunctionArgs(form),
+          value: BigInt(txValue || 0),
+        });
         onChange();
       } catch (e: any) {
         console.error("⚡️ ~ file: WriteOnlyFunctionForm.tsx:handleWrite ~ error", e);
@@ -63,8 +57,8 @@ export const WriteOnlyFunctionForm = ({
   };
 
   const [displayedTxResult, setDisplayedTxResult] = useState<TransactionReceipt>();
-  const { data: txResult } = useWaitForTransaction({
-    hash: result?.hash,
+  const { data: txResult } = useWaitForTransactionReceipt({
+    hash: result,
   });
   useEffect(() => {
     setDisplayedTxResult(txResult);

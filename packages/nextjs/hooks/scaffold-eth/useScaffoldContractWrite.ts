@@ -1,15 +1,13 @@
 import { useState } from "react";
 import { useTargetNetwork } from "./useTargetNetwork";
 import { Abi, ExtractAbiFunctionNames } from "abitype";
-import { useContractWrite, useNetwork } from "wagmi";
+import { useChainId, useWriteContract } from "wagmi";
 import { useDeployedContractInfo, useTransactor } from "~~/hooks/scaffold-eth";
 import { notification } from "~~/utils/scaffold-eth";
 import { ContractAbi, ContractName, UseScaffoldWriteConfig } from "~~/utils/scaffold-eth/contract";
 
-type UpdatedArgs = Parameters<ReturnType<typeof useContractWrite<Abi, string, undefined>>["writeAsync"]>[0];
-
 /**
- * Wrapper around wagmi's useContractWrite hook which automatically loads (by name) the contract ABI and address from
+ * Wrapper around wagmi's useWriteContract hook which automatically loads (by name) the contract ABI and address from
  * the contracts present in deployedContracts.ts & externalContracts.ts corresponding to targetNetworks configured in scaffold.config.ts
  * @param config - The config settings, including extra wagmi configuration
  * @param config.contractName - contract name
@@ -32,51 +30,44 @@ export const useScaffoldContractWrite = <
   ...writeConfig
 }: UseScaffoldWriteConfig<TContractName, TFunctionName>) => {
   const { data: deployedContractData } = useDeployedContractInfo(contractName);
-  const { chain } = useNetwork();
+  const chainId = useChainId();
   const writeTx = useTransactor();
   const [isMining, setIsMining] = useState(false);
   const { targetNetwork } = useTargetNetwork();
 
-  const wagmiContractWrite = useContractWrite({
-    chainId: targetNetwork.id,
-    address: deployedContractData?.address,
-    abi: deployedContractData?.abi as Abi,
-    functionName: functionName as any,
-    args: args as unknown[],
-    value: value,
-    ...writeConfig,
-  });
+  const { writeContract, ...wagmiContractWrite } = useWriteContract();
 
   const sendContractWriteTx = async ({
     args: newArgs,
     value: newValue,
-    ...otherConfig
   }: {
     args?: UseScaffoldWriteConfig<TContractName, TFunctionName>["args"];
     value?: UseScaffoldWriteConfig<TContractName, TFunctionName>["value"];
-  } & UpdatedArgs = {}) => {
+  } = {}) => {
     if (!deployedContractData) {
       notification.error("Target Contract is not deployed, did you forget to run `yarn deploy`?");
       return;
     }
-    if (!chain?.id) {
+    if (!chainId) {
       notification.error("Please connect your wallet");
       return;
     }
-    if (chain?.id !== targetNetwork.id) {
+    if (chainId !== targetNetwork.id) {
       notification.error("You are on the wrong network");
       return;
     }
 
-    if (wagmiContractWrite.writeAsync) {
+    if (writeContract) {
       try {
         setIsMining(true);
         const writeTxResult = await writeTx(
-          () =>
-            wagmiContractWrite.writeAsync({
-              args: newArgs ?? args,
+          async () =>
+            await writeContract({
+              address: deployedContractData.address,
+              abi: deployedContractData.abi as Abi,
+              functionName: functionName as any,
+              args: (newArgs ?? args) as unknown[],
               value: newValue ?? value,
-              ...otherConfig,
             }),
           { onBlockConfirmation, blockConfirmations },
         );
