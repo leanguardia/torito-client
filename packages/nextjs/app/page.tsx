@@ -2,9 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { NextPage } from "next";
-import { useAccount } from "wagmi";
 import { CheckCircleIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
-import { Address } from "~~/components/scaffold-eth";
 import { AmountRow } from "~~/components/torito/AmountRow";
 import { BalancePill } from "~~/components/torito/BalancePill";
 import { CountrySelect } from "~~/components/torito/CountrySelect";
@@ -14,8 +12,6 @@ import { useSupplyBalance } from "~~/hooks/torito/useSupplyBalance";
 import { fmt } from "~~/utils/number";
 
 const Home: NextPage = () => {
-  const { address: connectedAddress } = useAccount();
-
   const { countryId, setCountryId, country, usdt, setUsdt, usdtNum, localAmount, loanAmount } = useDeposit();
   const { supply, approve, needsApproval, isSupplying, isConfirmed, error: supplyError } = useSupply();
   const { formattedShares, isLoading: isLoadingBalance, refetch: refetchBalance } = useSupplyBalance();
@@ -87,10 +83,7 @@ const Home: NextPage = () => {
             <br className="hidden md:block" /> incluso en momentos duros
           </span>
         </h1>
-        <div className="flex items-center gap-2 bg-white rounded-full px-4 py-2 shadow-sm border border-gray-100">
-          <span className="text-sm text-gray-700">Connected Address:</span>
-          <Address address={connectedAddress} />
-        </div>
+
         <div className="flex gap-4 flex-wrap justify-center">
           <BalancePill
             key="wallet-balance"
