@@ -10,6 +10,7 @@ import { BalancePill } from "~~/components/torito/BalancePill";
 import { CountrySelect } from "~~/components/torito/CountrySelect";
 import { useDeposit } from "~~/hooks/torito/useDeposit";
 import { useSupply } from "~~/hooks/torito/useSupply";
+import { useSupplyBalance } from "~~/hooks/torito/useSupplyBalance";
 import { fmt } from "~~/utils/number";
 
 const Home: NextPage = () => {
@@ -17,6 +18,7 @@ const Home: NextPage = () => {
 
   const { countryId, setCountryId, country, usdt, setUsdt, usdtNum, localAmount, loanAmount } = useDeposit();
   const { supply, approve, needsApproval, isSupplying, isConfirmed, error: supplyError } = useSupply();
+  const { formattedShares, isLoading: isLoadingBalance, refetch: refetchBalance } = useSupplyBalance();
 
   const walletUsdtBalance = 0;
 
@@ -29,9 +31,11 @@ const Home: NextPage = () => {
         type: "success",
         text: "¡Depósito confirmado exitosamente en la blockchain!",
       });
+      // Refrescar el balance después de una transacción exitosa
+      refetchBalance();
       setTimeout(() => setAlert(null), 5000);
     }
-  }, [isConfirmed]);
+  }, [isConfirmed, refetchBalance]);
 
   // Efecto para manejar errores de transacción
   useEffect(() => {
@@ -88,8 +92,17 @@ const Home: NextPage = () => {
           <Address address={connectedAddress} />
         </div>
         <div className="flex gap-4 flex-wrap justify-center">
-          <BalancePill label="Tu balance de USDT (wallet):" value={`${fmt(walletUsdtBalance)} USDT`} />
-          <BalancePill label="Tu balance en Torito:" skeleton />
+          <BalancePill
+            key="wallet-balance"
+            label="Tu balance de USDT (wallet):"
+            value={`${fmt(walletUsdtBalance)} USDT`}
+          />
+          <BalancePill
+            key="torito-balance"
+            label="Tu balance en Torito:"
+            value={isLoadingBalance ? undefined : `${fmt(parseFloat(formattedShares), "es-BO", 6)} USDT`}
+            skeleton={isLoadingBalance}
+          />
         </div>
       </div>
 
