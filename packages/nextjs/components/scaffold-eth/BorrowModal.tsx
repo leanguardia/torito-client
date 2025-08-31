@@ -1,9 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useChainId } from "wagmi";
 import { ArrowUpTrayIcon, BanknotesIcon, BuildingLibraryIcon, QrCodeIcon } from "@heroicons/react/24/outline";
 import { COUNTRIES, DEFAULT_COUNTRY_ID } from "~~/constants/countries";
+import { useBorrow } from "~~/hooks/torito/useBorrow";
 import { useSupplyBalance } from "~~/hooks/torito/useSupplyBalance";
+import { getUSDTAddress } from "~~/utils/networkConfig";
 
 type DestType = "bank" | "qr";
 
@@ -24,6 +27,11 @@ const BorrowModalInner = () => {
 
   const [qrFile, setQrFile] = useState<File | null>(null);
   const [qrText, setQrText] = useState("");
+
+  // Hooks para blockchain
+  const chainId = useChainId();
+  const { borrow, isBorrowing, isConfirmed, error: borrowError } = useBorrow();
+  const usdtAddress = getUSDTAddress(chainId);
 
   // Obtener el balance del usuario de Torito
   const { formattedShares, isLoading: isLoadingBalance } = useSupplyBalance();
@@ -47,6 +55,18 @@ const BorrowModalInner = () => {
 
   const fmt = (n: number) => new Intl.NumberFormat("es-BO", { maximumFractionDigits: 2 }).format(n);
 
+  // Efecto para manejar la confirmación de la transacción
+  useEffect(() => {
+    if (isConfirmed && !loading) {
+      openResultAndReset();
+      setAmountBs("");
+      setBankName("");
+      setBankAccount("");
+      setQrFile(null);
+      setQrText("");
+    }
+  }, [isConfirmed, loading]);
+
   const openResultAndReset = () => {
     setLoanOpen(false);
     setTimeout(() => setResultOpen(true), 150);
@@ -56,17 +76,21 @@ const BorrowModalInner = () => {
     if (!canSubmit) return;
     try {
       setLoading(true);
-      await new Promise(r => setTimeout(r, 900));
+
+      // Convertir el monto de moneda local a USD
+      const amountFiat = parseFloat(amountBs);
+
+      // Ejecutar la transacción de borrow en el smart contract
+      await borrow(
+        usdtAddress, // collateralToken - dirección del USDT
+        amountFiat.toString(), // borrowFiat
+        country.code, // fiatCurrency - código de la moneda (BOB, ARS, etc.)
+      );
+
       setLoading(false);
-      openResultAndReset();
-      setAmountBs("");
-      setBankName("");
-      setBankAccount("");
-      setQrFile(null);
-      setQrText("");
     } catch (e) {
       setLoading(false);
-      console.error("Solicitar préstamo error:", e);
+      console.error("Error al solicitar préstamo:", e);
     }
   };
 
@@ -246,19 +270,24 @@ const BorrowModalInner = () => {
             )}
           </div>
           <div className="mt-5">
-            <button onClick={solicitarPrestamo} disabled={!canSubmit || loading} className="btn btn-primary w-full">
-              {loading ? (
+            <button
+              onClick={solicitarPrestamo}
+              disabled={!canSubmit || loading || isBorrowing}
+              className="btn btn-primary w-full"
+            >
+              {loading || isBorrowing ? (
                 <span className="loading loading-spinner loading-sm" />
               ) : (
                 <BanknotesIcon className="h-5 w-5" />
               )}
-              <span>Solicitar préstamo</span>
+              <span>{isBorrowing ? "Procesando..." : "Solicitar préstamo"}</span>
             </button>
             {!canSubmit && (
               <p className="mt-2 text-xs text-gray-500 text-center">
                 Ingresa un monto válido y el destino para continuar.
               </p>
             )}
+            {borrowError && <p className="mt-2 text-xs text-red-500 text-center">Error: {borrowError.message}</p>}
           </div>
         </div>
       </div>
