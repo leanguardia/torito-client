@@ -6,11 +6,11 @@ import { ArrowUpTrayIcon, BanknotesIcon, BuildingLibraryIcon, QrCodeIcon } from 
 const MAX_LOAN_BS = 5000;
 type DestType = "bank" | "qr";
 
-export const Faucet = () => {
-  return <FaucetInner />;
+export const BorrowModal = () => {
+  return <BorrowModalInner />;
 };
 
-const FaucetInner = () => {
+const BorrowModalInner = () => {
   const [loanOpen, setLoanOpen] = useState(false);
   const [resultOpen, setResultOpen] = useState(false);
   const [loading, setLoading] = useState(false);
