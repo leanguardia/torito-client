@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { NextPage } from "next";
 import { useAccount } from "wagmi";
 import { CheckCircleIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
@@ -9,48 +9,71 @@ import { AmountRow } from "~~/components/torito/AmountRow";
 import { BalancePill } from "~~/components/torito/BalancePill";
 import { CountrySelect } from "~~/components/torito/CountrySelect";
 import { useDeposit } from "~~/hooks/torito/useDeposit";
+import { useSupply } from "~~/hooks/torito/useSupply";
 import { fmt } from "~~/utils/number";
 
 const Home: NextPage = () => {
   const { address: connectedAddress } = useAccount();
 
   const { countryId, setCountryId, country, usdt, setUsdt, usdtNum, localAmount, loanAmount } = useDeposit();
+  const { supply, approve, needsApproval, isSupplying, isConfirmed, error: supplyError } = useSupply();
 
   const walletUsdtBalance = 0;
 
-  const [sending, setSending] = useState(false);
   const [alert, setAlert] = useState<null | { type: "success" | "error"; text: string }>(null);
 
+  // Efecto para manejar confirmaciones de transacción
+  useEffect(() => {
+    if (isConfirmed) {
+      setAlert({
+        type: "success",
+        text: "¡Depósito confirmado exitosamente en la blockchain!",
+      });
+      setTimeout(() => setAlert(null), 5000);
+    }
+  }, [isConfirmed]);
+
+  // Efecto para manejar errores de transacción
+  useEffect(() => {
+    if (supplyError) {
+      setAlert({
+        type: "error",
+        text: "Error en la transacción. Verifica tu saldo de USDT y allowance.",
+      });
+    }
+  }, [supplyError]);
+
   const onSend = async () => {
-    if (usdtNum <= 0 || sending) return;
+    if (usdtNum <= 0 || isSupplying) return;
 
     const sentUsdt = usdtNum;
     const sentLocal = localAmount;
 
     try {
-      setSending(true);
       setAlert(null);
 
-      await new Promise(r => setTimeout(r, 900));
-      const ok = Math.random() > 0.2;
-
-      if (!ok) throw new Error("Fallo simulado");
-
-      setUsdt("");
-
-      setAlert({
-        type: "success",
-        text: `Se enviaron ${fmt(sentUsdt)} USDT (~ ${country.symbol} ${fmt(sentLocal)}) correctamente.`,
-      });
-
-      setTimeout(() => setAlert(null), 4500);
-    } catch {
+      if (needsApproval(usdt)) {
+        // Primero necesita approve
+        await approve(usdt);
+        setAlert({
+          type: "success",
+          text: `Aprobación enviada. Después podrás hacer el depósito de ${fmt(sentUsdt)} USDT.`,
+        });
+      } else {
+        // Puede hacer supply directamente
+        await supply(usdt);
+        setUsdt("");
+        setAlert({
+          type: "success",
+          text: `Transacción enviada. Depositando ${fmt(sentUsdt)} USDT (~ ${country.symbol} ${fmt(sentLocal)}).`,
+        });
+      }
+    } catch (error) {
+      console.error("Error en supply:", error);
       setAlert({
         type: "error",
-        text: "No se pudo enviar. Intenta de nuevo.",
+        text: "No se pudo enviar la transacción. Verifica tu conexión y saldo.",
       });
-    } finally {
-      setSending(false);
     }
   };
 
@@ -125,15 +148,15 @@ const Home: NextPage = () => {
           <div className="mt-6">
             <button
               onClick={onSend}
-              disabled={usdtNum <= 0 || sending}
+              disabled={usdtNum <= 0 || isSupplying}
               className={`w-full md:w-auto rounded-xl px-6 py-3 font-semibold shadow-sm border transition-colors ${
-                usdtNum > 0 && !sending
+                usdtNum > 0 && !isSupplying
                   ? "btn btn-primary text-white"
                   : "bg-gray-200 text-gray-500 border-gray-200 cursor-not-allowed"
               }`}
             >
-              {sending ? <span className="loading loading-spinner loading-sm mr-2" /> : null}
-              Enviar
+              {isSupplying ? <span className="loading loading-spinner loading-sm mr-2" /> : null}
+              {usdtNum > 0 && needsApproval(usdt) ? "Aprobar USDT" : "Enviar"}
             </button>
           </div>
         </div>

@@ -1,16 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { useChainId } from "wagmi";
+// import { useChainId } from "wagmi";
 import { ArrowUpTrayIcon, BanknotesIcon, BuildingLibraryIcon, QrCodeIcon } from "@heroicons/react/24/outline";
 
 const MAX_LOAN_BS = 5000;
 type DestType = "bank" | "qr";
 
 export const Faucet = () => {
-  const chainId = useChainId();
-  const isLocal = chainId === 31337;
-  if (!isLocal) return null;
+
   return <FaucetInner />;
 };
 
