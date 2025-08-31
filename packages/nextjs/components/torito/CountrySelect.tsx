@@ -3,17 +3,16 @@
 import { useState } from "react";
 import { COUNTRIES } from "~~/constants/countries";
 
-export function CountrySelect({
-  countryId,
-  onSelect,
-  formatRate,
-}: {
+type Props = {
   countryId: string;
   onSelect: (id: string) => void;
   formatRate: (n: number) => string;
-}) {
+};
+
+export function CountrySelect({ countryId, onSelect, formatRate }: Props) {
   const [open, setOpen] = useState(false);
-  const active = COUNTRIES.find(c => c.id === countryId)!;
+  const active = COUNTRIES.find(c => c.id === countryId) ?? COUNTRIES[0];
+  if (!active) return null;
 
   return (
     <div className="relative">
