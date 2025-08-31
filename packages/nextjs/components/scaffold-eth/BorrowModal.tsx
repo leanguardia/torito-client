@@ -146,9 +146,12 @@ const BorrowModalInner = () => {
 
   return (
     <div>
-      <button onClick={() => setLoanOpen(true)} className="btn btn-primary btn-sm font-normal gap-1">
-        <BanknotesIcon className="h-4 w-4" />
-        <span>Préstamo</span>
+      <button
+        onClick={() => setLoanOpen(true)}
+        className="group relative bg-blue-500 hover:bg-blue-600 active:bg-blue-800 text-white px-6 py-2 rounded-2xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0 flex items-center gap-2 min-w-[140px] justify-center"
+      >
+        <BanknotesIcon className="h-5 w-5 group-hover:scale-110 transition-transform duration-200" />
+        <span className="text-base">Prestarme</span>
       </button>
       <input
         type="checkbox"
