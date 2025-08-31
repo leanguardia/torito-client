@@ -86,10 +86,10 @@ const BorrowModalInner = () => {
 
   // Efecto para resetear loading cuando hay errores del hook
   useEffect(() => {
-    if (borrowError && loading) {
+    if (borrowError) {
       setLoading(false);
     }
-  }, [borrowError, loading]);
+  }, [borrowError]);
 
   const openResultAndReset = () => {
     setLoanOpen(false);
@@ -97,7 +97,8 @@ const BorrowModalInner = () => {
   };
 
   const solicitarPrestamo = async () => {
-    if (!canSubmit) return;
+    if (!canSubmit || isBorrowing) return;
+
     try {
       setLoading(true);
 
@@ -111,7 +112,7 @@ const BorrowModalInner = () => {
         country.code, // fiatCurrency - código de la moneda (BOB, ARS, etc.)
       );
 
-      setLoading(false);
+      // Don't set loading false here - let the hook and useEffect handle it
     } catch (e) {
       setLoading(false);
       console.error("Error al solicitar préstamo:", e);

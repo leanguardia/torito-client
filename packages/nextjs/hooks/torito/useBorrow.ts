@@ -33,7 +33,7 @@ export function useBorrow() {
       setIsBorrowing(true);
       setLastTxHash(undefined);
 
-      const amountToBorrow = parseUnits("0.5", 18);
+      const amountToBorrow = parseUnits(borrowAmountFiat, 18);
 
       // Convertir la moneda fiat a bytes32 (alineado a la izquierda)
       const currencyBytes32 = pad(stringToHex(fiatCurrency), { dir: "right", size: 32 });
