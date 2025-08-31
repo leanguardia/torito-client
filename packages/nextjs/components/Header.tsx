@@ -2,53 +2,10 @@
 
 import React, { useCallback, useRef, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { Logo } from "./Logo";
-import { Bars3Icon, HomeIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon } from "@heroicons/react/24/outline";
 import { RainbowKitCustomConnectButton } from "~~/components/scaffold-eth";
 import { useOutsideClick } from "~~/hooks/scaffold-eth";
-import { cn } from "~~/utils/cn";
-
-type HeaderMenuLink = {
-  label: string;
-  href: string;
-  icon?: React.ReactNode;
-};
-
-export const menuLinks: HeaderMenuLink[] = [
-  {
-    label: "Home",
-    href: "/",
-    icon: <HomeIcon className="h-4 w-4" />,
-  },
-];
-
-export const HeaderMenuLinks = () => {
-  const pathname = usePathname();
-
-  return (
-    <>
-      {menuLinks.map(({ label, href, icon }) => {
-        const isActive = pathname === href;
-        return (
-          <li key={href}>
-            <Link
-              href={href}
-              passHref
-              className={cn(
-                "relative flex items-center justify-between px-4 py-2 text-sm transition-colors duration-200",
-                isActive ? "bg-base-100 primary-content" : "text-slate-400",
-              )}
-            >
-              {icon}
-              {label}
-            </Link>
-          </li>
-        );
-      })}
-    </>
-  );
-};
 
 /**
  * Site header
@@ -62,7 +19,7 @@ export const Header = () => {
   );
 
   return (
-    <header className="sticky lg:static top-0 navbar bg-base-900 min-h-0 flex-shrink-0 justify-between z-20 px-0 sm:px-2 border-b border-[#252442]">
+    <header className="sticky lg:static top-0 navbar bg-base-900 min-h-16 flex-shrink-0 justify-between z-20 px-0 sm:px-2 py-2 border-b border-[#252442]">
       <div className="navbar-start w-auto lg:w-1/2">
         <div className="lg:hidden dropdown" ref={burgerMenuRef}>
           <label
@@ -81,23 +38,19 @@ export const Header = () => {
               onClick={() => {
                 setIsDrawerOpen(false);
               }}
-            >
-              <HeaderMenuLinks />
-            </ul>
+            ></ul>
           )}
         </div>
         <Link href="/" passHref className="hidden lg:flex items-center gap-2 ml-4 mr-6 shrink-0">
           <div className="flex relative">
-            <Logo size={24} />
+            <Logo size={36} />
           </div>
           <div className="flex flex-col">
             <span className="font-bold leading-tight">Torito.App</span>
             <span className="text-xs">Protege tus finanzas</span>
           </div>
         </Link>
-        <ul className="hidden lg:flex lg:flex-nowrap menu menu-horizontal px-1 gap-2">
-          <HeaderMenuLinks />
-        </ul>
+        <ul className="hidden lg:flex lg:flex-nowrap menu menu-horizontal px-1 gap-2"></ul>
       </div>
       <div className="navbar-end flex-grow mr-4">
         <RainbowKitCustomConnectButton />

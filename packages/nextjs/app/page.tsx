@@ -9,14 +9,14 @@ import { CountrySelect } from "~~/components/torito/CountrySelect";
 import { useDeposit } from "~~/hooks/torito/useDeposit";
 import { useSupply } from "~~/hooks/torito/useSupply";
 import { useSupplyBalance } from "~~/hooks/torito/useSupplyBalance";
+import { useUSDTBalance } from "~~/hooks/torito/useUSDTBalance";
 import { fmt } from "~~/utils/number";
 
 const Home: NextPage = () => {
   const { countryId, setCountryId, country, usdt, setUsdt, usdtNum, localAmount, loanAmount } = useDeposit();
   const { supply, approve, needsApproval, isSupplying, isConfirmed, error: supplyError } = useSupply();
   const { formattedShares, isLoading: isLoadingBalance, refetch: refetchBalance } = useSupplyBalance();
-
-  const walletUsdtBalance = 0;
+  const { balance: walletUsdtBalance, isLoading: isLoadingUsdtBalance } = useUSDTBalance();
 
   const [alert, setAlert] = useState<null | { type: "success" | "error"; text: string }>(null);
 
@@ -87,12 +87,17 @@ const Home: NextPage = () => {
         <div className="flex gap-4 flex-wrap justify-center">
           <BalancePill
             key="wallet-balance"
-            label="Tu balance de USDT (wallet):"
-            value={`${fmt(walletUsdtBalance)} USDT`}
+            label={<>💰 Tu USDT:</>}
+            value={isLoadingUsdtBalance ? undefined : `${fmt(walletUsdtBalance)} USDT`}
+            skeleton={isLoadingUsdtBalance}
           />
           <BalancePill
             key="torito-balance"
-            label="Tu balance en Torito:"
+            label={
+              <>
+                <span style={{ display: "inline-block", transform: "scaleX(-1)" }}>🐂</span> En Torito:
+              </>
+            }
             value={isLoadingBalance ? undefined : `${fmt(parseFloat(formattedShares), "es-BO", 6)} USDT`}
             skeleton={isLoadingBalance}
           />
