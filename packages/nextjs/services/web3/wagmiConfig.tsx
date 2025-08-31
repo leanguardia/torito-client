@@ -1,8 +1,17 @@
 import { createConfig } from "wagmi";
-import { appChains, wagmiConnectors } from "~~/services/web3/wagmiConnectors";
+import * as chains from "viem/chains";
+import { transports, wagmiConnectors } from "~~/services/web3/wagmiConnectors";
+import { getTargetNetworks } from "~~/utils/scaffold-eth";
+
+const targetNetworks = getTargetNetworks();
+
+// We always want to have mainnet enabled (ENS resolution, ETH price, etc). But only once.
+const enabledChains = targetNetworks.find(network => network.id === 1)
+  ? targetNetworks
+  : [...targetNetworks, chains.mainnet];
 
 export const wagmiConfig = createConfig({
-  autoConnect: false,
+  chains: enabledChains as any,
   connectors: wagmiConnectors,
-  publicClient: appChains.publicClient,
+  transports,
 });
