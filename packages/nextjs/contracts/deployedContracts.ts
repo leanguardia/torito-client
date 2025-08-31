@@ -5,374 +5,417 @@
 import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
 const deployedContracts = {
-  1: {
+  1135: {
+    // Lisk mainnet - CAMBIAR por la red que uses
     Torito: {
-      address: "0x0000000000000000000000000000000000000000", // Add your deployed contract address here
+      address: "0xC67142e53e44B4dA051f59521948339f3B0cDFDC", // ⚠️ REEMPLAZAR CON LA DIRECCIÓN REAL DEL CONTRATO DESPLEGADO
       abi: [
         {
-          "type": "constructor",
-          "inputs": [
-            {"name": "_vault", "type": "address", "internalType": "address"},
-            {"name": "_owner", "type": "address", "internalType": "address"}
+          type: "constructor",
+          inputs: [
+            { name: "_vault", type: "address", internalType: "address" },
+            { name: "_owner", type: "address", internalType: "address" },
           ],
-          "stateMutability": "nonpayable"
+          stateMutability: "nonpayable",
         },
         {
-          "type": "function",
-          "name": "addSupportedCurrency",
-          "inputs": [
-            {"name": "currency", "type": "bytes32", "internalType": "bytes32"},
-            {"name": "oracle", "type": "address", "internalType": "address"},
-            {"name": "collateralizationRatio", "type": "uint256", "internalType": "uint256"},
-            {"name": "liquidationThreshold", "type": "uint256", "internalType": "uint256"},
-            {"name": "baseRate", "type": "uint256", "internalType": "uint256"},
-            {"name": "minRate", "type": "uint256", "internalType": "uint256"},
-            {"name": "maxRate", "type": "uint256", "internalType": "uint256"},
-            {"name": "sensitivity", "type": "uint256", "internalType": "uint256"}
+          type: "function",
+          name: "addSupportedCurrency",
+          inputs: [
+            { name: "currency", type: "bytes32", internalType: "bytes32" },
+            { name: "oracle", type: "address", internalType: "address" },
+            { name: "collateralizationRatio", type: "uint256", internalType: "uint256" },
+            { name: "liquidationThreshold", type: "uint256", internalType: "uint256" },
+            { name: "baseRate", type: "uint256", internalType: "uint256" },
+            { name: "minRate", type: "uint256", internalType: "uint256" },
+            { name: "maxRate", type: "uint256", internalType: "uint256" },
+            { name: "sensitivity", type: "uint256", internalType: "uint256" },
           ],
-          "outputs": [],
-          "stateMutability": "nonpayable"
+          outputs: [],
+          stateMutability: "nonpayable",
         },
         {
-          "type": "function",
-          "name": "borrow",
-          "inputs": [
-            {"name": "collateralToken", "type": "address", "internalType": "address"},
-            {"name": "borrowAmount", "type": "uint256", "internalType": "uint256"},
-            {"name": "fiatCurrency", "type": "bytes32", "internalType": "bytes32"}
+          type: "function",
+          name: "borrow",
+          inputs: [
+            { name: "collateralToken", type: "address", internalType: "address" },
+            { name: "borrowAmount", type: "uint256", internalType: "uint256" },
+            { name: "fiatCurrency", type: "bytes32", internalType: "bytes32" },
           ],
-          "outputs": [],
-          "stateMutability": "nonpayable"
+          outputs: [],
+          stateMutability: "nonpayable",
         },
         {
-          "type": "function",
-          "name": "borrows",
-          "inputs": [
-            {"name": "", "type": "address", "internalType": "address"},
-            {"name": "", "type": "bytes32", "internalType": "bytes32"}
+          type: "function",
+          name: "borrows",
+          inputs: [
+            { name: "", type: "address", internalType: "address" },
+            { name: "", type: "bytes32", internalType: "bytes32" },
           ],
-          "outputs": [
-            {"name": "owner", "type": "address", "internalType": "address"},
-            {"name": "borrowedAmount", "type": "uint256", "internalType": "uint256"},
-            {"name": "collateralToken", "type": "address", "internalType": "address"},
-            {"name": "fiatCurrency", "type": "bytes32", "internalType": "bytes32"},
-            {"name": "totalRepaid", "type": "uint256", "internalType": "uint256"},
-            {"name": "status", "type": "uint8", "internalType": "enum Torito.BorrowStatus"}
+          outputs: [
+            { name: "owner", type: "address", internalType: "address" },
+            { name: "borrowedAmount", type: "uint256", internalType: "uint256" },
+            { name: "collateralToken", type: "address", internalType: "address" },
+            { name: "fiatCurrency", type: "bytes32", internalType: "bytes32" },
+            { name: "totalRepaid", type: "uint256", internalType: "uint256" },
+            { name: "status", type: "uint8", internalType: "enum Torito.BorrowStatus" },
           ],
-          "stateMutability": "view"
+          stateMutability: "view",
         },
         {
-          "type": "function",
-          "name": "cancelBorrow",
-          "inputs": [
-            {"name": "user", "type": "address", "internalType": "address"},
-            {"name": "currency", "type": "bytes32", "internalType": "bytes32"}
+          type: "function",
+          name: "cancelBorrow",
+          inputs: [
+            { name: "user", type: "address", internalType: "address" },
+            { name: "currency", type: "bytes32", internalType: "bytes32" },
           ],
-          "outputs": [],
-          "stateMutability": "nonpayable"
+          outputs: [],
+          stateMutability: "nonpayable",
         },
         {
-          "type": "function",
-          "name": "convertCurrencyToUSD",
-          "inputs": [
-            {"name": "currency", "type": "bytes32", "internalType": "bytes32"},
-            {"name": "amount", "type": "uint256", "internalType": "uint256"}
+          type: "function",
+          name: "convertCurrencyToUSD",
+          inputs: [
+            { name: "currency", type: "bytes32", internalType: "bytes32" },
+            { name: "amount", type: "uint256", internalType: "uint256" },
           ],
-          "outputs": [
-            {"name": "", "type": "uint256", "internalType": "uint256"}
-          ],
-          "stateMutability": "view"
+          outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
+          stateMutability: "view",
         },
         {
-          "type": "function",
-          "name": "convertUSDToCurrency",
-          "inputs": [
-            {"name": "currency", "type": "bytes32", "internalType": "bytes32"},
-            {"name": "usdAmount", "type": "uint256", "internalType": "uint256"}
+          type: "function",
+          name: "convertUSDToCurrency",
+          inputs: [
+            { name: "currency", type: "bytes32", internalType: "bytes32" },
+            { name: "usdAmount", type: "uint256", internalType: "uint256" },
           ],
-          "outputs": [
-            {"name": "", "type": "uint256", "internalType": "uint256"}
-          ],
-          "stateMutability": "view"
+          outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
+          stateMutability: "view",
         },
         {
-          "type": "function",
-          "name": "getBorrow",
-          "inputs": [
-            {"name": "user", "type": "address", "internalType": "address"},
-            {"name": "currency", "type": "bytes32", "internalType": "bytes32"}
+          type: "function",
+          name: "getBorrow",
+          inputs: [
+            { name: "user", type: "address", internalType: "address" },
+            { name: "currency", type: "bytes32", internalType: "bytes32" },
           ],
-          "outputs": [
+          outputs: [
             {
-              "name": "",
-              "type": "tuple",
-              "internalType": "struct Torito.Borrow",
-              "components": [
-                {"name": "owner", "type": "address", "internalType": "address"},
-                {"name": "borrowedAmount", "type": "uint256", "internalType": "uint256"},
-                {"name": "collateralToken", "type": "address", "internalType": "address"},
-                {"name": "fiatCurrency", "type": "bytes32", "internalType": "bytes32"},
-                {"name": "totalRepaid", "type": "uint256", "internalType": "uint256"},
-                {"name": "status", "type": "uint8", "internalType": "enum Torito.BorrowStatus"}
-              ]
-            }
+              name: "",
+              type: "tuple",
+              internalType: "struct Torito.Borrow",
+              components: [
+                { name: "owner", type: "address", internalType: "address" },
+                { name: "borrowedAmount", type: "uint256", internalType: "uint256" },
+                { name: "collateralToken", type: "address", internalType: "address" },
+                { name: "fiatCurrency", type: "bytes32", internalType: "bytes32" },
+                { name: "totalRepaid", type: "uint256", internalType: "uint256" },
+                { name: "status", type: "uint8", internalType: "enum Torito.BorrowStatus" },
+              ],
+            },
           ],
-          "stateMutability": "view"
+          stateMutability: "view",
         },
         {
-          "type": "function",
-          "name": "getDynamicBorrowRate",
-          "inputs": [
-            {"name": "currency", "type": "bytes32", "internalType": "bytes32"}
-          ],
-          "outputs": [
-            {"name": "", "type": "uint256", "internalType": "uint256"}
-          ],
-          "stateMutability": "view"
+          type: "function",
+          name: "getDynamicBorrowRate",
+          inputs: [{ name: "currency", type: "bytes32", internalType: "bytes32" }],
+          outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
+          stateMutability: "view",
         },
         {
-          "type": "function",
-          "name": "liquidate",
-          "inputs": [
-            {"name": "user", "type": "address", "internalType": "address"},
-            {"name": "currency", "type": "bytes32", "internalType": "bytes32"}
+          type: "function",
+          name: "liquidate",
+          inputs: [
+            { name: "user", type: "address", internalType: "address" },
+            { name: "currency", type: "bytes32", internalType: "bytes32" },
           ],
-          "outputs": [],
-          "stateMutability": "nonpayable"
+          outputs: [],
+          stateMutability: "nonpayable",
         },
         {
-          "type": "function",
-          "name": "owner",
-          "inputs": [],
-          "outputs": [
-            {"name": "", "type": "address", "internalType": "address"}
-          ],
-          "stateMutability": "view"
+          type: "function",
+          name: "owner",
+          inputs: [],
+          outputs: [{ name: "", type: "address", internalType: "address" }],
+          stateMutability: "view",
         },
         {
-          "type": "function",
-          "name": "processBorrow",
-          "inputs": [
-            {"name": "user", "type": "address", "internalType": "address"},
-            {"name": "currency", "type": "bytes32", "internalType": "bytes32"}
+          type: "function",
+          name: "processBorrow",
+          inputs: [
+            { name: "user", type: "address", internalType: "address" },
+            { name: "currency", type: "bytes32", internalType: "bytes32" },
           ],
-          "outputs": [],
-          "stateMutability": "nonpayable"
+          outputs: [],
+          stateMutability: "nonpayable",
         },
         {
-          "type": "function",
-          "name": "renounceOwnership",
-          "inputs": [],
-          "outputs": [],
-          "stateMutability": "nonpayable"
+          type: "function",
+          name: "renounceOwnership",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
         },
         {
-          "type": "function",
-          "name": "repayLoan",
-          "inputs": [
-            {"name": "currency", "type": "bytes32", "internalType": "bytes32"},
-            {"name": "repaymentAmount", "type": "uint256", "internalType": "uint256"}
+          type: "function",
+          name: "repayLoan",
+          inputs: [
+            { name: "currency", type: "bytes32", internalType: "bytes32" },
+            { name: "repaymentAmount", type: "uint256", internalType: "uint256" },
           ],
-          "outputs": [],
-          "stateMutability": "nonpayable"
+          outputs: [],
+          stateMutability: "nonpayable",
         },
         {
-          "type": "function",
-          "name": "setSupportedToken",
-          "inputs": [
-            {"name": "token", "type": "address", "internalType": "address"},
-            {"name": "supported", "type": "bool", "internalType": "bool"}
+          type: "function",
+          name: "setSupportedToken",
+          inputs: [
+            { name: "token", type: "address", internalType: "address" },
+            { name: "supported", type: "bool", internalType: "bool" },
           ],
-          "outputs": [],
-          "stateMutability": "nonpayable"
+          outputs: [],
+          stateMutability: "nonpayable",
         },
         {
-          "type": "function",
-          "name": "supplies",
-          "inputs": [
-            {"name": "", "type": "address", "internalType": "address"},
-            {"name": "", "type": "address", "internalType": "address"}
+          type: "function",
+          name: "supplies",
+          inputs: [
+            { name: "", type: "address", internalType: "address" },
+            { name: "", type: "address", internalType: "address" },
           ],
-          "outputs": [
-            {"name": "owner", "type": "address", "internalType": "address"},
-            {"name": "shares", "type": "uint256", "internalType": "uint256"},
-            {"name": "token", "type": "address", "internalType": "address"},
-            {"name": "borrowFiatCurrency", "type": "bytes32", "internalType": "bytes32"},
-            {"name": "status", "type": "uint8", "internalType": "enum Torito.SupplyStatus"}
+          outputs: [
+            { name: "owner", type: "address", internalType: "address" },
+            { name: "shares", type: "uint256", internalType: "uint256" },
+            { name: "token", type: "address", internalType: "address" },
+            { name: "borrowFiatCurrency", type: "bytes32", internalType: "bytes32" },
+            { name: "status", type: "uint8", internalType: "enum Torito.SupplyStatus" },
           ],
-          "stateMutability": "view"
+          stateMutability: "view",
         },
         {
-          "type": "function",
-          "name": "supply",
-          "inputs": [
-            {"name": "token", "type": "address", "internalType": "address"},
-            {"name": "amount", "type": "uint256", "internalType": "uint256"}
+          type: "function",
+          name: "supply",
+          inputs: [
+            { name: "token", type: "address", internalType: "address" },
+            { name: "amount", type: "uint256", internalType: "uint256" },
           ],
-          "outputs": [],
-          "stateMutability": "nonpayable"
+          outputs: [],
+          stateMutability: "nonpayable",
         },
         {
-          "type": "function",
-          "name": "supportedCurrencies",
-          "inputs": [
-            {"name": "", "type": "bytes32", "internalType": "bytes32"}
+          type: "function",
+          name: "supportedCurrencies",
+          inputs: [{ name: "", type: "bytes32", internalType: "bytes32" }],
+          outputs: [
+            { name: "currency", type: "bytes32", internalType: "bytes32" },
+            { name: "collateralizationRatio", type: "uint256", internalType: "uint256" },
+            { name: "liquidationThreshold", type: "uint256", internalType: "uint256" },
+            { name: "oracle", type: "address", internalType: "address" },
+            { name: "baseRate", type: "uint256", internalType: "uint256" },
+            { name: "minRate", type: "uint256", internalType: "uint256" },
+            { name: "maxRate", type: "uint256", internalType: "uint256" },
+            { name: "sensitivity", type: "uint256", internalType: "uint256" },
+            { name: "borrowIndex", type: "uint256", internalType: "uint256" },
+            { name: "lastUpdateBorrowIndex", type: "uint256", internalType: "uint256" },
           ],
-          "outputs": [
-            {"name": "currency", "type": "bytes32", "internalType": "bytes32"},
-            {"name": "collateralizationRatio", "type": "uint256", "internalType": "uint256"},
-            {"name": "liquidationThreshold", "type": "uint256", "internalType": "uint256"},
-            {"name": "oracle", "type": "address", "internalType": "address"},
-            {"name": "baseRate", "type": "uint256", "internalType": "uint256"},
-            {"name": "minRate", "type": "uint256", "internalType": "uint256"},
-            {"name": "maxRate", "type": "uint256", "internalType": "uint256"},
-            {"name": "sensitivity", "type": "uint256", "internalType": "uint256"},
-            {"name": "borrowIndex", "type": "uint256", "internalType": "uint256"},
-            {"name": "lastUpdateBorrowIndex", "type": "uint256", "internalType": "uint256"}
-          ],
-          "stateMutability": "view"
+          stateMutability: "view",
         },
         {
-          "type": "function",
-          "name": "supportedTokens",
-          "inputs": [
-            {"name": "", "type": "address", "internalType": "address"}
-          ],
-          "outputs": [
-            {"name": "", "type": "bool", "internalType": "bool"}
-          ],
-          "stateMutability": "view"
+          type: "function",
+          name: "supportedTokens",
+          inputs: [{ name: "", type: "address", internalType: "address" }],
+          outputs: [{ name: "", type: "bool", internalType: "bool" }],
+          stateMutability: "view",
         },
         {
-          "type": "function",
-          "name": "transferOwnership",
-          "inputs": [
-            {"name": "newOwner", "type": "address", "internalType": "address"}
+          type: "function",
+          name: "transferOwnership",
+          inputs: [{ name: "newOwner", type: "address", internalType: "address" }],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "updateBorrowIndex",
+          inputs: [{ name: "currency", type: "bytes32", internalType: "bytes32" }],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "updateCurrencyOracle",
+          inputs: [
+            { name: "currency", type: "bytes32", internalType: "bytes32" },
+            { name: "oracle", type: "address", internalType: "address" },
           ],
-          "outputs": [],
-          "stateMutability": "nonpayable"
+          outputs: [],
+          stateMutability: "nonpayable",
         },
         {
-          "type": "function",
-          "name": "updateBorrowIndex",
-          "inputs": [
-            {"name": "currency", "type": "bytes32", "internalType": "bytes32"}
+          type: "function",
+          name: "vault",
+          inputs: [],
+          outputs: [{ name: "", type: "address", internalType: "contract IMetaMorpho" }],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "withdrawSupply",
+          inputs: [
+            { name: "token", type: "address", internalType: "address" },
+            { name: "assetsToWithdraw", type: "uint256", internalType: "uint256" },
           ],
-          "outputs": [],
-          "stateMutability": "nonpayable"
+          outputs: [],
+          stateMutability: "nonpayable",
         },
         {
-          "type": "function",
-          "name": "updateCurrencyOracle",
-          "inputs": [
-            {"name": "currency", "type": "bytes32", "internalType": "bytes32"},
-            {"name": "oracle", "type": "address", "internalType": "address"}
+          type: "event",
+          name: "BorrowCanceled",
+          inputs: [
+            { name: "user", type: "address", indexed: true, internalType: "address" },
+            { name: "currency", type: "bytes32", indexed: false, internalType: "bytes32" },
           ],
-          "outputs": [],
-          "stateMutability": "nonpayable"
+          anonymous: false,
         },
         {
-          "type": "function",
-          "name": "vault",
-          "inputs": [],
-          "outputs": [
-            {"name": "", "type": "address", "internalType": "contract IMetaMorpho"}
+          type: "event",
+          name: "BorrowProcessed",
+          inputs: [
+            { name: "user", type: "address", indexed: true, internalType: "address" },
+            { name: "currency", type: "bytes32", indexed: false, internalType: "bytes32" },
           ],
-          "stateMutability": "view"
+          anonymous: false,
         },
         {
-          "type": "function",
-          "name": "withdrawSupply",
-          "inputs": [
-            {"name": "token", "type": "address", "internalType": "address"},
-            {"name": "assetsToWithdraw", "type": "uint256", "internalType": "uint256"}
+          type: "event",
+          name: "BorrowUpdated",
+          inputs: [
+            { name: "user", type: "address", indexed: true, internalType: "address" },
+            { name: "currency", type: "bytes32", indexed: false, internalType: "bytes32" },
+            { name: "amount", type: "uint256", indexed: false, internalType: "uint256" },
+            { name: "totalAmount", type: "uint256", indexed: false, internalType: "uint256" },
           ],
-          "outputs": [],
-          "stateMutability": "nonpayable"
+          anonymous: false,
         },
         {
-          "type": "event",
-          "name": "BorrowCanceled",
-          "inputs": [
-            {"name": "user", "type": "address", "indexed": true, "internalType": "address"},
-            {"name": "currency", "type": "bytes32", "indexed": false, "internalType": "bytes32"}
+          type: "event",
+          name: "CollateralLiquidated",
+          inputs: [
+            { name: "user", type: "address", indexed: true, internalType: "address" },
+            { name: "collateralAmount", type: "uint256", indexed: false, internalType: "uint256" },
           ],
-          "anonymous": false
+          anonymous: false,
         },
         {
-          "type": "event",
-          "name": "BorrowProcessed",
-          "inputs": [
-            {"name": "user", "type": "address", "indexed": true, "internalType": "address"},
-            {"name": "currency", "type": "bytes32", "indexed": false, "internalType": "bytes32"}
+          type: "event",
+          name: "LoanRepaid",
+          inputs: [
+            { name: "user", type: "address", indexed: true, internalType: "address" },
+            { name: "currency", type: "bytes32", indexed: false, internalType: "bytes32" },
+            { name: "amount", type: "uint256", indexed: false, internalType: "uint256" },
+            { name: "remainingAmount", type: "uint256", indexed: false, internalType: "uint256" },
           ],
-          "anonymous": false
+          anonymous: false,
         },
         {
-          "type": "event",
-          "name": "BorrowUpdated",
-          "inputs": [
-            {"name": "user", "type": "address", "indexed": true, "internalType": "address"},
-            {"name": "currency", "type": "bytes32", "indexed": false, "internalType": "bytes32"},
-            {"name": "amount", "type": "uint256", "indexed": false, "internalType": "uint256"},
-            {"name": "totalAmount", "type": "uint256", "indexed": false, "internalType": "uint256"}
+          type: "event",
+          name: "OwnershipTransferred",
+          inputs: [
+            { name: "previousOwner", type: "address", indexed: true, internalType: "address" },
+            { name: "newOwner", type: "address", indexed: true, internalType: "address" },
           ],
-          "anonymous": false
+          anonymous: false,
         },
         {
-          "type": "event",
-          "name": "CollateralLiquidated",
-          "inputs": [
-            {"name": "user", "type": "address", "indexed": true, "internalType": "address"},
-            {"name": "collateralAmount", "type": "uint256", "indexed": false, "internalType": "uint256"}
+          type: "event",
+          name: "SupplyUpdated",
+          inputs: [
+            { name: "user", type: "address", indexed: true, internalType: "address" },
+            { name: "token", type: "address", indexed: false, internalType: "address" },
+            { name: "amount", type: "uint256", indexed: false, internalType: "uint256" },
+            { name: "totalAmount", type: "uint256", indexed: false, internalType: "uint256" },
           ],
-          "anonymous": false
+          anonymous: false,
         },
         {
-          "type": "event",
-          "name": "LoanRepaid",
-          "inputs": [
-            {"name": "user", "type": "address", "indexed": true, "internalType": "address"},
-            {"name": "currency", "type": "bytes32", "indexed": false, "internalType": "bytes32"},
-            {"name": "amount", "type": "uint256", "indexed": false, "internalType": "uint256"},
-            {"name": "remainingAmount", "type": "uint256", "indexed": false, "internalType": "uint256"}
+          type: "error",
+          name: "OwnableInvalidOwner",
+          inputs: [{ name: "owner", type: "address", internalType: "address" }],
+        },
+        {
+          type: "error",
+          name: "OwnableUnauthorizedAccount",
+          inputs: [{ name: "account", type: "address", internalType: "address" }],
+        },
+      ],
+    },
+  },
+  31337: {
+    // Hardhat local network para desarrollo
+    Torito: {
+      address: "0x5FbDB2315678afecb367f032d93F642f64180aa3", // Dirección típica del primer contrato en Hardhat
+      abi: [
+        {
+          type: "constructor",
+          inputs: [
+            { name: "_vault", type: "address", internalType: "address" },
+            { name: "_owner", type: "address", internalType: "address" },
           ],
-          "anonymous": false
+          stateMutability: "nonpayable",
         },
         {
-          "type": "event",
-          "name": "OwnershipTransferred",
-          "inputs": [
-            {"name": "previousOwner", "type": "address", "indexed": true, "internalType": "address"},
-            {"name": "newOwner", "type": "address", "indexed": true, "internalType": "address"}
+          type: "function",
+          name: "supply",
+          inputs: [
+            { name: "token", type: "address", internalType: "address" },
+            { name: "amount", type: "uint256", internalType: "uint256" },
           ],
-          "anonymous": false
+          outputs: [],
+          stateMutability: "nonpayable",
         },
         {
-          "type": "event",
-          "name": "SupplyUpdated",
-          "inputs": [
-            {"name": "user", "type": "address", "indexed": true, "internalType": "address"},
-            {"name": "token", "type": "address", "indexed": false, "internalType": "address"},
-            {"name": "amount", "type": "uint256", "indexed": false, "internalType": "uint256"},
-            {"name": "totalAmount", "type": "uint256", "indexed": false, "internalType": "uint256"}
+          type: "function",
+          name: "withdrawSupply",
+          inputs: [
+            { name: "token", type: "address", internalType: "address" },
+            { name: "assetsToWithdraw", type: "uint256", internalType: "uint256" },
           ],
-          "anonymous": false
+          outputs: [],
+          stateMutability: "nonpayable",
         },
         {
-          "type": "error",
-          "name": "OwnableInvalidOwner",
-          "inputs": [
-            {"name": "owner", "type": "address", "internalType": "address"}
-          ]
+          type: "function",
+          name: "borrow",
+          inputs: [
+            { name: "collateralToken", type: "address", internalType: "address" },
+            { name: "borrowAmount", type: "uint256", internalType: "uint256" },
+            { name: "fiatCurrency", type: "bytes32", internalType: "bytes32" },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
         },
         {
-          "type": "error",
-          "name": "OwnableUnauthorizedAccount",
-          "inputs": [
-            {"name": "account", "type": "address", "internalType": "address"}
-          ]
-        }
+          type: "function",
+          name: "repayLoan",
+          inputs: [
+            { name: "currency", type: "bytes32", internalType: "bytes32" },
+            { name: "repaymentAmount", type: "uint256", internalType: "uint256" },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "event",
+          name: "SupplyUpdated",
+          inputs: [
+            { name: "user", type: "address", indexed: true, internalType: "address" },
+            { name: "token", type: "address", indexed: false, internalType: "address" },
+            { name: "amount", type: "uint256", indexed: false, internalType: "uint256" },
+            { name: "totalAmount", type: "uint256", indexed: false, internalType: "uint256" },
+          ],
+          anonymous: false,
+        },
       ],
     },
   },

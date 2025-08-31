@@ -53,21 +53,18 @@ const Home: NextPage = () => {
       setAlert(null);
 
       if (needsApproval(usdt)) {
-        // Primero necesita approve
         await approve(usdt);
         setAlert({
           type: "success",
           text: `Aprobación enviada. Después podrás hacer el depósito de ${fmt(sentUsdt)} USDT.`,
         });
-      } else {
-        // Puede hacer supply directamente
-        await supply(usdt);
-        setUsdt("");
-        setAlert({
-          type: "success",
-          text: `Transacción enviada. Depositando ${fmt(sentUsdt)} USDT (~ ${country.symbol} ${fmt(sentLocal)}).`,
-        });
       }
+      await supply(usdt);
+      setUsdt("");
+      setAlert({
+        type: "success",
+        text: `Transacción enviada. Depositando ${fmt(sentUsdt)} USDT (~ ${country.symbol} ${fmt(sentLocal)}).`,
+      });
     } catch (error) {
       console.error("Error en supply:", error);
       setAlert({
@@ -156,7 +153,7 @@ const Home: NextPage = () => {
               }`}
             >
               {isSupplying ? <span className="loading loading-spinner loading-sm mr-2" /> : null}
-              {usdtNum > 0 && needsApproval(usdt) ? "Aprobar USDT" : "Enviar"}
+              {usdtNum > 0 && needsApproval(usdt) ? "DEPOSITAR USDT" : "Enviar"}
             </button>
           </div>
         </div>

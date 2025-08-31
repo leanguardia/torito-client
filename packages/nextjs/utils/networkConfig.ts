@@ -1,7 +1,7 @@
 export const NETWORK_CONFIG = {
   // Lisk mainnet
   1135: {
-    usdt: "0x05D032ac25d322df992303dCa074EE7392C117b9", // USDT en Lisk
+    usdt: "0x43F2376D5D03553aE72F4A8093bbe9de4336EB08", // USDT en Lisk
   },
   // Hardhat local
   31337: {

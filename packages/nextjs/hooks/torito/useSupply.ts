@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { parseUnits } from "viem";
 import { useAccount, useChainId, useReadContract, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+// Importar el ABI específico de Torito
+import ToritoABI from "~~/contracts/Torito-ABI.json";
 import { useScaffoldContract } from "~~/hooks/scaffold-eth";
 import { getUSDTAddress } from "~~/utils/networkConfig";
 
@@ -83,18 +85,10 @@ export function useSupply() {
       // Convertir el monto a wei (USDT tiene 6 decimales)
       const amount = parseUnits(usdtAmount, 6);
 
-      // Verificar si necesita approval
-      const currentAllowance = allowance as bigint;
-      if (!currentAllowance || currentAllowance < amount) {
-        // Primero hacer approve
-        await approve(usdtAmount);
-        return; // El usuario necesitará hacer otra transacción para supply
-      }
-
-      // Si ya tiene allowance suficiente, hacer supply directamente
+      // Usar el ABI específico de Torito para la función supply
       await writeContract({
         address: toritoContract.address,
-        abi: toritoContract.abi,
+        abi: ToritoABI,
         functionName: "supply",
         args: [usdtAddress, amount],
       });
