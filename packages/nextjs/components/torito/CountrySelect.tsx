@@ -19,17 +19,17 @@ export function CountrySelect({ countryId, onSelect, formatRate }: Props) {
       <button
         type="button"
         onClick={() => setOpen(o => !o)}
-        className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary flex items-center justify-between"
+        className="w-full rounded-2xl border-2 border-gray-200 bg-white px-5 py-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 flex items-center justify-between hover:border-gray-300 transition-colors"
       >
         <span className="flex items-center gap-3">
-          <span className="text-xl leading-none">{active.flag}</span>
-          <span className="font-medium">{active.name}</span>
+          <span className="text-2xl leading-none">{active.flag}</span>
+          <span className="font-semibold text-lg">{active.name}</span>
         </span>
-        <span className="text-gray-500">⌄</span>
+        <span className="text-gray-400 text-xl">⌄</span>
       </button>
 
       {open && (
-        <ul className="absolute z-20 mt-2 w-full rounded-xl border border-gray-200 bg-white shadow-lg max-h-64 overflow-auto">
+        <ul className="absolute z-20 mt-3 w-full rounded-2xl border-2 border-gray-200 bg-white shadow-xl max-h-72 overflow-auto">
           {COUNTRIES.map(c => (
             <li key={c.id}>
               <button
@@ -38,13 +38,13 @@ export function CountrySelect({ countryId, onSelect, formatRate }: Props) {
                   onSelect(c.id);
                   setOpen(false);
                 }}
-                className={`w-full text-left px-4 py-3 hover:bg-gray-50 flex items-center gap-3 ${
-                  c.id === countryId ? "bg-gray-50" : ""
+                className={`w-full text-left px-5 py-4 hover:bg-blue-50 flex items-center gap-3 transition-colors first:rounded-t-2xl last:rounded-b-2xl ${
+                  c.id === countryId ? "bg-blue-50 border-l-4 border-blue-500" : ""
                 }`}
               >
                 <span className="text-xl leading-none">{c.flag}</span>
-                <span className="flex-1">{c.name}</span>
-                <span className="text-gray-600 text-sm">
+                <span className="flex-1 font-medium">{c.name}</span>
+                <span className="text-gray-600 text-sm font-semibold">
                   {c.symbol} {formatRate(c.rate)}
                 </span>
               </button>

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import type { NextPage } from "next";
 import { CheckCircleIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
-import { AmountRow } from "~~/components/torito/AmountRow";
+import { DepositBorrowCalculator } from "~~/components/torito/AmountRow";
 import { BalancePill } from "~~/components/torito/BalancePill";
 import { CountrySelect } from "~~/components/torito/CountrySelect";
 import { useDeposit } from "~~/hooks/torito/useDeposit";
@@ -19,6 +19,48 @@ const Home: NextPage = () => {
   const { balance: walletUsdtBalance, isLoading: isLoadingUsdtBalance } = useUSDTBalance();
 
   const [alert, setAlert] = useState<null | { type: "success" | "error"; text: string }>(null);
+  const [validationError, setValidationError] = useState<string | null>(null);
+
+  // Validation logic
+  const validateUSDTInput = (value: string): string | null => {
+    if (!value || value.trim() === "") {
+      return "Ingresa un monto de USDT";
+    }
+
+    const numValue = Number(value);
+
+    if (isNaN(numValue)) {
+      return "Debe ser un número válido";
+    }
+
+    if (numValue <= 0) {
+      return "El monto debe ser mayor a 0";
+    }
+
+    if (numValue > walletUsdtBalance && walletUsdtBalance > 0) {
+      return `No tienes suficiente USDT (tienes ${fmt(walletUsdtBalance)})`;
+    }
+
+    // Check for too many decimal places (USDT has 6 decimals max)
+    const decimalParts = value.split(".");
+    if (decimalParts.length > 1 && decimalParts[1].length > 6) {
+      return "Máximo 6 decimales permitidos";
+    }
+
+    return null;
+  };
+
+  // Validate on USDT change
+  useEffect(() => {
+    if (usdt) {
+      const error = validateUSDTInput(usdt);
+      setValidationError(error);
+    } else {
+      setValidationError(null);
+    }
+  }, [usdt, walletUsdtBalance]);
+
+  const isValidInput = !validationError && usdt && usdtNum > 0;
 
   // Efecto para manejar confirmaciones de transacción
   useEffect(() => {
@@ -44,13 +86,24 @@ const Home: NextPage = () => {
   }, [supplyError]);
 
   const onSend = async () => {
-    if (usdtNum <= 0 || isSupplying) return;
+    // Validate input before proceeding
+    const validationErr = validateUSDTInput(usdt);
+    if (validationErr || !isValidInput || isSupplying) {
+      if (validationErr) {
+        setAlert({
+          type: "error",
+          text: validationErr,
+        });
+      }
+      return;
+    }
 
     const sentUsdt = usdtNum;
     const sentLocal = localAmount;
 
     try {
       setAlert(null);
+      setValidationError(null);
 
       if (needsApproval(usdt)) {
         await approve(usdt);
@@ -79,8 +132,10 @@ const Home: NextPage = () => {
       <div className="px-5 flex flex-col gap-6 items-center w-full">
         <h1 className="text-center max-w-4xl leading-tight text-base-content">
           <span className="block text-5xl md:text-6xl font-extrabold">
-            Protegemos tus finanzas
-            <br className="hidden md:block" /> incluso en momentos duros
+            Deposita dólares,
+            <br className="hidden md:block" /> préstate el 50%
+            <br />
+            en moneda local
           </span>
         </h1>
 
@@ -105,67 +160,90 @@ const Home: NextPage = () => {
       </div>
 
       <div className="w-full max-w-4xl mt-8 px-5">
-        <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8 border border-gray-100">
-          <h2 className="text-xl font-semibold mb-6 text-base-content">Depositar</h2>
+        <div className="bg-white rounded-3xl shadow-xl p-8 md:p-10 border-2 border-gray-100 backdrop-blur-sm">
           {alert && (
             <div
-              className={`mb-4 rounded-xl border px-4 py-3 flex items-center gap-2 ${
+              className={`mb-6 rounded-2xl border-2 px-5 py-4 flex items-center gap-3 ${
                 alert.type === "success"
                   ? "bg-green-50 border-green-200 text-green-800"
                   : "bg-red-50 border-red-200 text-red-800"
               }`}
             >
               {alert.type === "success" ? (
-                <CheckCircleIcon className="h-5 w-5" />
+                <CheckCircleIcon className="h-6 w-6 flex-shrink-0" />
               ) : (
-                <ExclamationTriangleIcon className="h-5 w-5" />
+                <ExclamationTriangleIcon className="h-6 w-6 flex-shrink-0" />
               )}
-              <span className="text-sm">{alert.text}</span>
-              <button onClick={() => setAlert(null)} className="ml-auto btn btn-ghost btn-xs">
+              <span className="text-sm font-medium">{alert.text}</span>
+              <button onClick={() => setAlert(null)} className="ml-auto text-xl hover:opacity-70 transition-opacity">
                 ✕
               </button>
             </div>
           )}
 
-          <label className="block text-sm font-medium text-gray-700 mb-2">País</label>
-          <CountrySelect countryId={countryId} onSelect={setCountryId} formatRate={n => fmt(n)} />
-
-          <div className="mt-6">
-            {usdtNum <= 0 ? (
-              <div className="w-full rounded-xl bg-gray-50 border border-gray-100 px-4 py-3 text-center text-gray-600">
-                Ingresa un monto para ver cuánto podrías prestarte.
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div>
+              <label className="block text-sm font-bold text-gray-800 mb-3">🌍 Tu País</label>
+              <CountrySelect countryId={countryId} onSelect={setCountryId} formatRate={n => fmt(n)} />
+            </div>
+            <div className="flex flex-col justify-end">
+              <label className="block text-sm font-bold text-gray-800 mb-3">💱 Tipo de Cambio</label>
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl px-5 py-4">
+                <div className="text-center">
+                  <div className="text-lg font-bold text-blue-800">
+                    1 USDT = {country.symbol} {fmt(country.rate)}
+                  </div>
+                  <div className="text-sm text-blue-600 mt-1">{country.code} • Actualizado al instante</div>
+                </div>
               </div>
-            ) : (
-              <div className="w-full rounded-xl bg-amber-50 border border-amber-200 px-4 py-3 text-center text-amber-900">
-                Podrías prestarte:{" "}
-                <strong>
-                  {country.symbol} {fmt(loanAmount)}
-                </strong>{" "}
-                (50% de tu depósito convertido)
-              </div>
-            )}
+            </div>
           </div>
 
-          <label className="block text-sm font-medium text-gray-700 mb-2 mt-8">Monto en USDT</label>
-          <AmountRow usdt={usdt} setUsdt={setUsdt} country={country} formattedLocal={fmt(localAmount)} />
+          <div className="mb-8">
+            <DepositBorrowCalculator
+              usdt={usdt}
+              setUsdt={setUsdt}
+              country={country}
+              formattedLocal={fmt(localAmount)}
+              loanAmount={loanAmount}
+              fmt={fmt}
+              validationError={validationError}
+              isValidInput={isValidInput}
+            />
+          </div>
 
-          <p className="text-sm text-gray-500 mt-2 mb-6">
-            1&nbsp;USDT = {country.symbol}&nbsp;{fmt(country.rate)} {country.code}
-          </p>
-
-          <div className="mt-6">
+          <div className="flex flex-col items-center space-y-4">
             <button
               onClick={onSend}
-              disabled={usdtNum <= 0 || isSupplying}
-              className={`w-full md:w-auto rounded-xl px-6 py-3 font-semibold shadow-sm border transition-colors ${
-                usdtNum > 0 && !isSupplying
-                  ? "btn btn-primary text-white"
-                  : "bg-gray-200 text-gray-500 border-gray-200 cursor-not-allowed"
+              disabled={!isValidInput || isSupplying}
+              className={`w-full max-w-md rounded-2xl px-8 py-4 font-bold text-lg shadow-lg transition-all duration-200 transform ${
+                isValidInput && !isSupplying
+                  ? "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-green-200 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
+                  : "bg-gray-200 text-gray-500 cursor-not-allowed shadow-gray-100"
               }`}
             >
-              {isSupplying ? <span className="loading loading-spinner loading-sm mr-2" /> : null}
-              {usdtNum > 0 && needsApproval(usdt) ? "DEPOSITAR USDT" : "Enviar"}
+              {isSupplying ? (
+                <div className="flex items-center justify-center">
+                  <span className="loading loading-spinner loading-md mr-3" />
+                  Procesando...
+                </div>
+              ) : isValidInput && needsApproval(usdt) ? (
+                "🔐 Aprobar y Depositar USDT"
+              ) : isValidInput ? (
+                "💰 Depositar USDT"
+              ) : validationError ? (
+                "Corrige los errores"
+              ) : (
+                "Ingresa un monto para continuar"
+              )}
             </button>
+
+            {isValidInput && !isSupplying && (
+              <div className="text-center space-y-1">
+                <div className="text-sm text-gray-600">⚡ Depósito rápido y seguro</div>
+                <div className="text-xs text-gray-500">Tu transacción será confirmada en la blockchain</div>
+              </div>
+            )}
           </div>
         </div>
       </div>
