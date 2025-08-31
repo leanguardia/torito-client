@@ -84,7 +84,7 @@ const Home: NextPage = () => {
         <h1 className="text-center max-w-4xl leading-tight text-base-content">
           <span className="block text-5xl md:text-6xl font-extrabold">
             Protegemos tus finanzas
-            <br className="hidden md:block" /> cuando la economía colapsa
+            <br className="hidden md:block" /> incluso en momentos duros
           </span>
         </h1>
         <div className="flex items-center gap-2 bg-white rounded-full px-4 py-2 shadow-sm border border-gray-100">
@@ -132,13 +132,6 @@ const Home: NextPage = () => {
           <label className="block text-sm font-medium text-gray-700 mb-2">País</label>
           <CountrySelect countryId={countryId} onSelect={setCountryId} formatRate={n => fmt(n)} />
 
-          <label className="block text-sm font-medium text-gray-700 mb-2 mt-8">Monto en USDT</label>
-          <AmountRow usdt={usdt} setUsdt={setUsdt} country={country} formattedLocal={fmt(localAmount)} />
-
-          <p className="text-sm text-gray-500 mt-2 mb-6">
-            1&nbsp;USDT = {country.symbol}&nbsp;{fmt(country.rate)} {country.code}
-          </p>
-
           <div className="mt-6">
             {usdtNum <= 0 ? (
               <div className="w-full rounded-xl bg-gray-50 border border-gray-100 px-4 py-3 text-center text-gray-600">
@@ -154,6 +147,13 @@ const Home: NextPage = () => {
               </div>
             )}
           </div>
+
+          <label className="block text-sm font-medium text-gray-700 mb-2 mt-8">Monto en USDT</label>
+          <AmountRow usdt={usdt} setUsdt={setUsdt} country={country} formattedLocal={fmt(localAmount)} />
+
+          <p className="text-sm text-gray-500 mt-2 mb-6">
+            1&nbsp;USDT = {country.symbol}&nbsp;{fmt(country.rate)} {country.code}
+          </p>
 
           <div className="mt-6">
             <button

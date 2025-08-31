@@ -10,6 +10,21 @@ import { getUSDTAddress } from "~~/utils/networkConfig";
 
 type DestType = "bank" | "qr";
 
+const BOLIVIAN_BANKS = [
+  "Banco Mercantil Santa Cruz",
+  "Banco Ganadero",
+  "Banco Nacional de Bolivia",
+  "Banco Bisa",
+  "Banco Sol",
+  "Banco Unión",
+  "Banco Económico",
+  "Banco Fassil",
+  "Banco Fortaleza",
+  "Banco FIE",
+  "Banco Pyme",
+  "Banco de Crédito de Bolivia",
+] as const;
+
 export const BorrowModal = () => {
   return <BorrowModalInner />;
 };
@@ -51,7 +66,9 @@ const BorrowModalInner = () => {
   const canSubmit =
     amountNum > 0 &&
     amountNum <= maxLoanAmount &&
-    (destType === "bank" ? bankAccount.trim().length > 0 : qrFile !== null || qrText.trim().length > 0);
+    (destType === "bank"
+      ? bankName.trim().length > 0 && bankAccount.trim().length > 0
+      : qrFile !== null || qrText.trim().length > 0);
 
   const fmt = (n: number) => new Intl.NumberFormat("es-BO", { maximumFractionDigits: 2 }).format(n);
 
@@ -224,12 +241,18 @@ const BorrowModalInner = () => {
 
             {destType === "bank" ? (
               <div className="space-y-3">
-                <input
+                <select
                   value={bankName}
                   onChange={e => setBankName(e.target.value)}
-                  placeholder="Banco"
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-                />
+                >
+                  <option value="">Selecciona tu banco</option>
+                  {BOLIVIAN_BANKS.map(bank => (
+                    <option key={bank} value={bank}>
+                      {bank}
+                    </option>
+                  ))}
+                </select>
                 <input
                   value={bankAccount}
                   onChange={e => setBankAccount(e.target.value.replace(/[^\d\-]/g, ""))}
