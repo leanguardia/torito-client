@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { ArrowUpTrayIcon, BanknotesIcon, BuildingLibraryIcon, QrCodeIcon } from "@heroicons/react/24/outline";
+import { COUNTRIES, DEFAULT_COUNTRY_ID } from "~~/constants/countries";
+import { useSupplyBalance } from "~~/hooks/torito/useSupplyBalance";
 
-const MAX_LOAN_BS = 5000;
 type DestType = "bank" | "qr";
 
 export const BorrowModal = () => {
@@ -24,12 +25,24 @@ const BorrowModalInner = () => {
   const [qrFile, setQrFile] = useState<File | null>(null);
   const [qrText, setQrText] = useState("");
 
-  const available = MAX_LOAN_BS;
+  // Obtener el balance del usuario de Torito
+  const { formattedShares, isLoading: isLoadingBalance } = useSupplyBalance();
+
+  // Obtener información del país para el cálculo
+  const country = COUNTRIES.find(c => c.id === DEFAULT_COUNTRY_ID)!;
+
+  // Calcular el préstamo máximo basado en el saldo de Torito
+  // Convertir shares de USDT a monto local y luego aplicar el 50%
+  const usdtBalance = parseFloat(formattedShares || "0");
+  const localBalance = usdtBalance * country.rate; // Convertir USDT a moneda local
+  const maxLoanAmount = usdtBalance > 0 ? localBalance * 0.5 : 0; // 50% del depósito convertido
+
+  const available = maxLoanAmount;
   const amountNum = Number(amountBs || 0);
 
   const canSubmit =
     amountNum > 0 &&
-    amountNum <= available &&
+    amountNum <= maxLoanAmount &&
     (destType === "bank" ? bankAccount.trim().length > 0 : qrFile !== null || qrText.trim().length > 0);
 
   const fmt = (n: number) => new Intl.NumberFormat("es-BO", { maximumFractionDigits: 2 }).format(n);
@@ -58,10 +71,29 @@ const BorrowModalInner = () => {
   };
 
   const onChangeAmount = (v: string) => {
-    const clean = v.replace(/[^0-9.]/g, "");
-    const n = Number(clean || 0);
-    const clamped = Math.min(n, available);
-    setAmountBs(clean === "" ? "" : String(clamped));
+    // Permitir solo números y un punto decimal
+    let clean = v.replace(/[^0-9.]/g, "");
+
+    // Evitar múltiples puntos decimales
+    const parts = clean.split(".");
+    if (parts.length > 2) {
+      clean = parts[0] + "." + parts.slice(1).join("");
+    }
+
+    // Si el campo está vacío, permitirlo
+    if (clean === "" || clean === ".") {
+      setAmountBs(clean);
+      return;
+    }
+
+    const n = Number(clean);
+
+    // Validar que no exceda el máximo disponible
+    if (n >= maxLoanAmount) {
+      setAmountBs(String(maxLoanAmount));
+    } else {
+      setAmountBs(clean);
+    }
   };
 
   return (
@@ -90,7 +122,19 @@ const BorrowModalInner = () => {
           </div>
 
           <p className="text-gray-600 mb-4">
-            Puedes prestarte hasta <strong>{fmt(MAX_LOAN_BS)} Bs</strong> con tu saldo actual.
+            {isLoadingBalance ? (
+              "Cargando tu saldo..."
+            ) : usdtBalance > 0 ? (
+              <>
+                Puedes prestarte hasta{" "}
+                <strong>
+                  {fmt(maxLoanAmount)} {country.symbol}
+                </strong>{" "}
+                con tu saldo actual.
+              </>
+            ) : (
+              "Deposita USDT en Torito para poder solicitar préstamos."
+            )}
           </p>
 
           <div className="mb-4">
@@ -103,10 +147,21 @@ const BorrowModalInner = () => {
                 placeholder="0.00"
                 className="w-full pl-4 pr-20 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 text-base focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
               />
-              <div className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-600 font-medium">Bs</div>
+              <div className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-600 font-medium">
+                {country.symbol}
+              </div>
             </div>
             <div className="mt-1 text-sm text-gray-500">
-              Disponible: <strong>{fmt(available)} Bs</strong>
+              {isLoadingBalance ? (
+                "Cargando..."
+              ) : (
+                <>
+                  Disponible:{" "}
+                  <strong>
+                    {fmt(available)} {country.symbol}
+                  </strong>
+                </>
+              )}
             </div>
           </div>
 
@@ -123,7 +178,7 @@ const BorrowModalInner = () => {
               >
                 <BuildingLibraryIcon className="h-5 w-5" />
                 <div className="leading-tight">
-                  <div className="font-medium">Cuenta bancaria (Bolivia)</div>
+                  <div className="font-medium">Cuenta bancaria</div>
                   <div className="text-xs text-gray-500">Depósito a tu cuenta local</div>
                 </div>
               </button>
@@ -148,7 +203,7 @@ const BorrowModalInner = () => {
                 <input
                   value={bankName}
                   onChange={e => setBankName(e.target.value)}
-                  placeholder="Banco (opcional)"
+                  placeholder="Banco"
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                 />
                 <input

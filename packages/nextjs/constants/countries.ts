@@ -8,7 +8,7 @@ export type Country = {
 };
 
 export const COUNTRIES: readonly Country[] = [
-  { id: "bo", name: "Bolivia", flag: "🇧🇴", symbol: "Bs", code: "BOB", rate: 12.2 },
+  { id: "bo", name: "Bolivia", flag: "🇧🇴", symbol: "Bs", code: "BOB", rate: 12 },
   { id: "ar", name: "Argentina", flag: "🇦🇷", symbol: "$", code: "ARS", rate: 1000 },
   { id: "co", name: "Colombia", flag: "🇨🇴", symbol: "$", code: "COP", rate: 4100 },
   { id: "pe", name: "Perú", flag: "🇵🇪", symbol: "S/", code: "PEN", rate: 3.7 },
