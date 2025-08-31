@@ -1,11 +1,44 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./app/**/*.{js,ts,jsx,tsx}", "./components/**/*.{js,ts,jsx,tsx}", "./utils/**/*.{js,ts,jsx,tsx}"],
+  content: [
+    "./pages/**/*.{js,ts,jsx,tsx}",
+    "./app/**/*.{js,ts,jsx,tsx}",
+    "./components/**/*.{js,ts,jsx,tsx}",
+    "./utils/**/*.{js,ts,jsx,tsx}",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
   plugins: [require("daisyui")],
   darkTheme: "dark",
-  // DaisyUI theme colors
   daisyui: {
     themes: [
+
+      {
+        torito: {
+
+          primary: "#1A3B77",
+          "primary-content": "#F8FAFC",
+          secondary: "#284B94",
+          "secondary-content": "#F8FAFC",
+          accent: "#F7C840",
+          "accent-content": "#3A3A3A",
+
+
+          "base-100": "#F2F4F6",
+          "base-200": "#FFFFFF",
+          "base-300": "#F7F7F8",
+          "base-content": "#3A3A3A",
+
+
+          info: "#60A5FA",
+          success: "#34D399",
+          warning: "#FBBF24",
+          error: "#F87171",
+
+
+          "--rounded-btn": "0.75rem",
+        },
+      },
+
       {
         dark: {
           primary: "#FFD700",
@@ -26,16 +59,9 @@ module.exports = {
           error: "#F87171",
 
           "--rounded-btn": "9999rem",
-
-          ".tooltip": {
-            "--tooltip-tail": "6px",
-          },
-          ".link": {
-            textUnderlineOffset: "2px",
-          },
-          ".link:hover": {
-            opacity: "80%",
-          },
+          ".tooltip": { "--tooltip-tail": "6px" },
+          ".link": { textUnderlineOffset: "2px" },
+          ".link:hover": { opacity: "80%" },
         },
       },
     ],
