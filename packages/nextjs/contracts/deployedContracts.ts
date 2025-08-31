@@ -8,7 +8,7 @@ const deployedContracts = {
   1135: {
     // Lisk mainnet - CAMBIAR por la red que uses
     Torito: {
-      address: "0xC67142e53e44B4dA051f59521948339f3B0cDFDC", // ⚠️ REEMPLAZAR CON LA DIRECCIÓN REAL DEL CONTRATO DESPLEGADO
+      address: "0x9Aa985d70A6c9c8eb7c2A548BBb6b4c802585A49", // ⚠️ REEMPLAZAR CON LA DIRECCIÓN REAL DEL CONTRATO DESPLEGADO
       abi: [
         {
           type: "constructor",

@@ -84,6 +84,13 @@ const BorrowModalInner = () => {
     }
   }, [isConfirmed, loading]);
 
+  // Efecto para resetear loading cuando hay errores del hook
+  useEffect(() => {
+    if (borrowError && loading) {
+      setLoading(false);
+    }
+  }, [borrowError, loading]);
+
   const openResultAndReset = () => {
     setLoanOpen(false);
     setTimeout(() => setResultOpen(true), 150);

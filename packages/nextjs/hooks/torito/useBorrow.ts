@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { pad, parseUnits, stringToHex } from "viem";
 import { useAccount, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 // Importar el ABI específico de Torito
@@ -33,20 +33,20 @@ export function useBorrow() {
       setIsBorrowing(true);
       setLastTxHash(undefined);
 
-      const amountToBorrow = parseUnits(borrowAmountFiat, 6);
+      const amountToBorrow = parseUnits("0.5", 18);
 
       // Convertir la moneda fiat a bytes32 (alineado a la izquierda)
       const currencyBytes32 = pad(stringToHex(fiatCurrency), { dir: "right", size: 32 });
 
       // Usar el ABI específico de Torito para la función borrow
 
-      //   console.log("contract info", {
-      //     collateralToken,
-      //     borrowAmountFiat,
-      //     amountToBorrow,
-      //     fiatCurrency,
-      //     currencyBytes32
-      //   })
+      console.log("contract info", {
+        collateralToken,
+        borrowAmountFiat,
+        amountToBorrow,
+        fiatCurrency,
+        currencyBytes32,
+      });
       await writeContract({
         address: toritoContract.address,
         abi: ToritoABI,
@@ -63,9 +63,11 @@ export function useBorrow() {
   };
 
   // Reset isBorrowing when transaction is confirmed or fails
-  if (isBorrowing && (isConfirmed || writeError || confirmError)) {
-    setIsBorrowing(false);
-  }
+  useEffect(() => {
+    if (isBorrowing && (isConfirmed || writeError || confirmError)) {
+      setIsBorrowing(false);
+    }
+  }, [isBorrowing, isConfirmed, writeError, confirmError]);
 
   return {
     borrow,
