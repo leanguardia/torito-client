@@ -65,7 +65,7 @@ export function DepositBorrowCalculator({
       {usdtNum > 0 && !hasError ? (
         <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-4">
           <div className="text-center space-y-2">
-            <div className="text-sm font-medium text-green-700">🎯 Podrás prestarte HOY (después de confirmar):</div>
+            <div className="text-sm font-medium text-green-700">🎯 Podrás prestarte HOY:</div>
             <div className="text-3xl font-bold text-green-800">
               {country.symbol} {fmt(loanAmount)}
             </div>

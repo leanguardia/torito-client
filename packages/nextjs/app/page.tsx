@@ -98,26 +98,18 @@ const Home: NextPage = () => {
       return;
     }
 
-    const sentUsdt = usdtNum;
-    const sentLocal = localAmount;
-
     try {
       setAlert(null);
       setValidationError(null);
 
       if (needsApproval(usdt)) {
         await approve(usdt);
-        setAlert({
-          type: "success",
-          text: `Aprobación enviada. Después podrás hacer el depósito de ${fmt(sentUsdt)} USDT.`,
-        });
+        // Don't show success alert here, just clear any existing alerts
+        setAlert(null);
       }
       await supply(usdt);
       setUsdt("");
-      setAlert({
-        type: "success",
-        text: `Transacción enviada. Depositando ${fmt(sentUsdt)} USDT (~ ${country.symbol} ${fmt(sentLocal)}).`,
-      });
+      // Don't show success alert here - it will be handled by the isConfirmed useEffect
     } catch (error) {
       console.error("Error en supply:", error);
       setAlert({
@@ -208,7 +200,6 @@ const Home: NextPage = () => {
               loanAmount={loanAmount}
               fmt={fmt}
               validationError={validationError}
-              isValidInput={isValidInput}
             />
           </div>
 

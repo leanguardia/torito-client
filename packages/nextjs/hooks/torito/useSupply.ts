@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { parseUnits } from "viem";
 import { useAccount, useChainId, useReadContract, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 // Importar el ABI específico de Torito
@@ -109,9 +109,11 @@ export function useSupply() {
   };
 
   // Reset isSupplying when transaction is confirmed or fails
-  if (isSupplying && (isConfirmed || writeError || confirmError)) {
-    setIsSupplying(false);
-  }
+  useEffect(() => {
+    if (isSupplying && (isConfirmed || writeError || confirmError)) {
+      setIsSupplying(false);
+    }
+  }, [isSupplying, isConfirmed, writeError, confirmError]);
 
   return {
     supply,
