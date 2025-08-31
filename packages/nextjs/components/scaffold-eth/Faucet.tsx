@@ -1,14 +1,12 @@
 "use client";
 
 import { useState } from "react";
-// import { useChainId } from "wagmi";
 import { ArrowUpTrayIcon, BanknotesIcon, BuildingLibraryIcon, QrCodeIcon } from "@heroicons/react/24/outline";
 
 const MAX_LOAN_BS = 5000;
 type DestType = "bank" | "qr";
 
 export const Faucet = () => {
-
   return <FaucetInner />;
 };
 
